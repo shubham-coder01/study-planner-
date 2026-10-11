@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Study Planner</title>
+<style>
+body {
+  background: #111;
+  color: white;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+h1 { color: #65e6a5; }
+input, button {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 6px;
+}
+input { max-width: 95%; }
+button {
+  background: #28a56b;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.card {
+  background: #222;
+  padding: 15px;
+  margin: 12px 0;
+  border-radius: 10px;
+}
+li { margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<h1>📚 My Study Planner</h1>
+<p>Plan your day and track your studies!</p>
+
+<div class="card">
+  <h2>Add Study Task</h2>
+  <input id="task" placeholder="What will you study?">
+  <input id="time" type="number" min="1" placeholder="Minutes">
+  <br>
+  <button onclick="addTask()">Add Task</button>
+</div>
+
+<div class="card">
+  <h2>Today's Tasks</h2>
+  <ul id="tasks"></ul>
+</div>
+
+<div class="card">
+  <h2>Study Timer</h2>
+  <p id="timer">25:00</p>
+  <button onclick="startTimer()">Start</button>
+  <button onclick="pauseTimer()">Pause</button>
+  <button onclick="resetTimer()">Reset</button>
+</div>
+
+<script>
+let seconds = 1500;
+let interval = null;
+
+function showTimer() {
+  let m = Math.floor(seconds / 60);
+  let s = seconds % 60;
+  document.getElementById("timer").textContent =
+    String(m).padStart(2, "0") + ":" +
+    String(s).padStart(2, "0");
+}
+
+function startTimer() {
+  if (interval !== null) return;
+  interval = setInterval(() => {
+    if (seconds > 0) {
+      seconds--;
+      showTimer();
+    } else {
+      clearInterval(interval);
+      interval = null;
+      alert("Study time is over! Take a break.");
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  clearInterval(interval);
+  interval = null;
+}
+
+function resetTimer() {
+  pauseTimer();
+  seconds = 1500;
+  showTimer();
+}
+
+function addTask() {
+  const task = document.getElementById("task").value.trim();
+  const time = document.getElementById("time").value;
+  if (!task || !time || Number(time) < 1) {
+    alert("Enter a task and minutes!");
+    return;
+  }
+
+  const li = document.createElement("li");
+  li.textContent = task + " — " + time + " minutes ";
+  const done = document.createElement("button");
+  done.textContent = "Done ✓";
+  done.onclick = () => li.style.textDecoration = "line-through";
+  li.appendChild(done);
+  document.getElementById("tasks").appendChild(li);
+
+  document.getElementById("task").value = "";
+  document.getElementById("time").value = "";
+}
+
+showTimer();
+</script>
+</body>
+</html>
